@@ -2,7 +2,7 @@
 
 public class FunctionEvaluator
 {
-    public static double Evalute(string infix)
+    public static double Evaluate(string infix)
     {
         var postfix = ToPostfix(infix);
         return Calculate(postfix);
