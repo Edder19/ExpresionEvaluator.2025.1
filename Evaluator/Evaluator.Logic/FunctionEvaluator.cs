@@ -73,7 +73,7 @@ namespace Evaluator.Logic
                             {
                                 postfix.Add(stack.Pop().ToString());
                             }
-                            stack.Pop(); // Eliminar '('
+                            stack.Pop(); 
                         }
                         else
                         {
