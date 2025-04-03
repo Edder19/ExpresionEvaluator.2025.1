@@ -5,28 +5,31 @@ using System.Text;
 
 namespace Evaluator.Logic
 {
+
     public class FunctionEvaluator
     {
-        public static double Evaluate(string infix)
+        public static double Evalute(string infix)
         {
             var postfix = ToPostfix(infix);
             return Calculate(postfix);
         }
 
-        private static double Calculate(List<string> postfix)
+        private static double Calculate(string postfix)
         {
             var stack = new Stack<double>();
-            foreach (var item in postfix)
+            var tokens = postfix.Split(' ');
+
+            foreach (var token in tokens)
             {
-                if (double.TryParse(item, NumberStyles.Any, CultureInfo.InvariantCulture, out double number))
+                if (double.TryParse(token, out double number))
                 {
                     stack.Push(number);
                 }
-                else if (IsOperator(item))
+                else if (IsOperator(token[0]))
                 {
-                    var operator2 = stack.Pop();
-                    var operator1 = stack.Pop();
-                    stack.Push(Result(operator1, item[0], operator2));
+                    double operator2 = stack.Pop();
+                    double operator1 = stack.Pop();
+                    stack.Push(Result(operator1, token[0], operator2));
                 }
             }
             return stack.Pop();
@@ -45,55 +48,40 @@ namespace Evaluator.Logic
             };
         }
 
-        private static List<string> ToPostfix(string infix)
+        private static string ToPostfix(string infix)
         {
             var stack = new Stack<char>();
             var postfix = new List<string>();
-            var numberBuffer = new StringBuilder();
+            var number = "";
 
             foreach (var item in infix)
             {
                 if (char.IsDigit(item) || item == '.')
                 {
-                    numberBuffer.Append(item);
+                    number += item;
                 }
                 else
                 {
-                    if (numberBuffer.Length > 0)
+                    if (!string.IsNullOrEmpty(number))
                     {
-                        postfix.Add(numberBuffer.ToString());
-                        numberBuffer.Clear();
+                        postfix.Add(number);
+                        number = "";
                     }
 
-                    if (IsOperator(item.ToString()))
+                    if (IsOperator(item))
                     {
-                        if (item == ')')
+                        while (stack.Count > 0 && PriorityStack(stack.Peek()) >= PriorityExpression(item))
                         {
-                            while (stack.Peek() != '(')
-                            {
-                                postfix.Add(stack.Pop().ToString());
-                            }
-                            stack.Pop(); 
+                            postfix.Add(stack.Pop().ToString());
                         }
-                        else
-                        {
-                            while (stack.Count > 0 && PriorityExpression(item) <= PriorityStack(stack.Peek()))
-                            {
-                                postfix.Add(stack.Pop().ToString());
-                            }
-                            stack.Push(item);
-                        }
-                    }
-                    else if (item == '(')
-                    {
                         stack.Push(item);
                     }
                 }
             }
 
-            if (numberBuffer.Length > 0)
+            if (!string.IsNullOrEmpty(number))
             {
-                postfix.Add(numberBuffer.ToString());
+                postfix.Add(number);
             }
 
             while (stack.Count > 0)
@@ -101,7 +89,7 @@ namespace Evaluator.Logic
                 postfix.Add(stack.Pop().ToString());
             }
 
-            return postfix;
+            return string.Join(" ", postfix);
         }
 
         private static int PriorityStack(char item)
@@ -132,6 +120,7 @@ namespace Evaluator.Logic
             };
         }
 
-        private static bool IsOperator(string item) => "()^*/+-".Contains(item);
+        private static bool IsOperator(char item) => "()^*/+-".IndexOf(item) >= 0;
     }
+
 }
