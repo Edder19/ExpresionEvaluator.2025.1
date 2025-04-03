@@ -21,7 +21,7 @@ namespace Evaluator.UI.Windows
 
         private void btnDelete_Click(object sender, EventArgs e)
         {
-            txtDisplay.Text = txtDisplay.Text.Substring(0, txtDisplay.Text.Length - 1) ;
+            txtDisplay.Text = txtDisplay.Text.Substring(0, txtDisplay.Text.Length - 1);
         }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -96,7 +96,7 @@ namespace Evaluator.UI.Windows
 
         private void btnClear_Click(object sender, EventArgs e)
         {
-            txtDisplay.Text = string.Empty ;
+            txtDisplay.Text = string.Empty;
         }
 
         private void btnOpenParenthesis_Click(object sender, EventArgs e)
@@ -116,7 +116,7 @@ namespace Evaluator.UI.Windows
 
         private void btnResultado_Click(object sender, EventArgs e)
         {
-            txtDisplay.Text += $"={FunctionEvaluator.Evaluate(txtDisplay.Text) }";
+            txtDisplay.Text += $"={FunctionEvaluator.Evaluate(txtDisplay.Text)}";
         }
     }
 }
